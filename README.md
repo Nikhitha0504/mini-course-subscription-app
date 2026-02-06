@@ -71,9 +71,9 @@ BFSALE25
 
 
 mini-course-subscription-app/
-├── backend/
-├── frontend/
-└── README.md
+---backend/
+---frontend/
+---README.md
 
 
 
