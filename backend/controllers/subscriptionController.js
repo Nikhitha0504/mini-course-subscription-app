@@ -1,5 +1,8 @@
+// const Course = require("../models/Course");
+// const Subscription = require("../models/Subscription");
 const Course = require("../models/Course");
-const Subscription = require("../models/Subscription");
+const SubscriptionModel = require("../models/Subscription");
+
 
 // ✅ Subscribe to course
 exports.subscribeToCourse = async (req, res) => {
@@ -12,7 +15,7 @@ exports.subscribeToCourse = async (req, res) => {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    const alreadySubscribed = await Subscription.findOne({
+    const alreadySubscribed = await SubscriptionModel.findOne({
       userId,
       courseId,
     });
@@ -32,7 +35,7 @@ exports.subscribeToCourse = async (req, res) => {
       finalPrice = course.price / 2;
     }
 
-    const subscription = await Subscription.create({
+    const subscription = await SubscriptionModel.create({
       userId,
       courseId,
       pricePaid: finalPrice,
@@ -52,7 +55,7 @@ exports.getMyCourses = async (req, res) => {
   try {
     const userId = req.user.userId; // ✅ FIX HERE
 
-    const subscriptions = await Subscription.find({ userId })
+    const subscriptions = await SubscriptionModel.find({ userId })
       .populate("courseId");
 
     const myCourses = subscriptions.map((sub) => ({
