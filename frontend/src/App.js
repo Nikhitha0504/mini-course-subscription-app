@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import CourseDetail from "./pages/CourseDetail";
 import MyCourses from "./pages/MyCourses";
 import Navbar from "./components/Navbar";
+import Signup from "./pages/Signup";
 
 function App() {
   return (
@@ -13,10 +14,13 @@ function App() {
       <Navbar />
 
       <Routes>
-        {/* Login page (public) */}
+        {/* Public Routes */}
         <Route path="/" element={<Login />} />
+<Route path="/login" element={<Login />} />
 
-        {/* Home (protected) */}
+        <Route path="/signup" element={<Signup />} />
+
+        {/* Protected Routes */}
         <Route
           path="/home"
           element={
@@ -26,7 +30,6 @@ function App() {
           }
         />
 
-        {/* Course Detail (protected) */}
         <Route
           path="/course/:id"
           element={
@@ -36,7 +39,6 @@ function App() {
           }
         />
 
-        {/* My Courses (protected) */}
         <Route
           path="/my-courses"
           element={

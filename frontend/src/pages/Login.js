@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
 import { setToken } from "../utils/auth";
 
@@ -66,6 +66,11 @@ const Login = () => {
               {loading ? "Logging in..." : "Login"}
             </button>
           </form>
+
+          {/* ✅ Signup link */}
+          <p className="text-center mt-3">
+            Don’t have an account? <Link to="/signup">Sign up</Link>
+          </p>
         </div>
       </div>
     </div>
