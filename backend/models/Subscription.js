@@ -1,27 +1,25 @@
-const mongoose = require("mongoose");
+const Subscription = require("../models/Subscription");
 
-const subscriptionSchema = new mongoose.Schema(
-  {
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-    courseId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Course",
-      required: true,
-    },
-    pricePaid: {
-      type: Number,
-      required: true,
-    },
-    subscribedAt: {
-      type: Date,
-      default: Date.now,
-    },
-  },
-  { timestamps: true }
-);
+// GET MY COURSES
+exports.getMyCourses = async (req, res) => {
+  try {
+    const subscriptions = await Subscription.find({
+      userId: req.user.userId, // ✅ FIXED
+    }).populate("courseId");
 
-module.exports = mongoose.model("Subscription", subscriptionSchema);
+    const myCourses = subscriptions.map((sub) => ({
+      _id: sub.courseId._id,
+      title: sub.courseId.title,
+      image: sub.courseId.image,
+      pricePaid: sub.pricePaid,
+      subscribedAt: sub.subscribedAt,
+    }));
+
+    res.status(200).json(myCourses);
+  } catch (error) {
+    console.error("MyCourses error:", error);
+    res.status(500).json({
+      message: "Failed to fetch subscribed courses",
+    });
+  }
+};

@@ -1,20 +1,26 @@
 const Course = require("../models/Course");
 const Subscription = require("../models/Subscription");
 
-// Subscribe
+// ✅ Subscribe to course
 exports.subscribeToCourse = async (req, res) => {
   try {
     const { courseId, promoCode } = req.body;
-    const userId = req.user.userId; // ✅ KEEP THIS
+    const userId = req.user.userId; // ✅ correct
 
     const course = await Course.findById(courseId);
     if (!course) {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    const alreadySubscribed = await Subscription.findOne({ userId, courseId });
+    const alreadySubscribed = await Subscription.findOne({
+      userId,
+      courseId,
+    });
+
     if (alreadySubscribed) {
-      return res.status(400).json({ message: "Already subscribed" });
+      return res
+        .status(400)
+        .json({ message: "Already subscribed to this course" });
     }
 
     let finalPrice = course.price;
@@ -33,24 +39,34 @@ exports.subscribeToCourse = async (req, res) => {
     });
 
     res.status(201).json({
-      message: "Subscribed successfully 🎉",
+      message: "Subscribed successfully",
       subscription,
     });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
-// ✅ FIX HERE
+// ✅ Get my courses (FIXED)
 exports.getMyCourses = async (req, res) => {
   try {
-    const userId = req.user.userId; // 🔥 FIXED
+    const userId = req.user.userId; // ✅ FIX HERE
 
     const subscriptions = await Subscription.find({ userId })
       .populate("courseId");
 
-    res.status(200).json(subscriptions);
-  } catch (err) {
-    res.status(500).json({ message: "Failed to fetch courses" });
+    const myCourses = subscriptions.map((sub) => ({
+      _id: sub.courseId._id,
+      title: sub.courseId.title,        // ✅ TITLE
+      image: sub.courseId.image,        // ✅ IMAGE
+      pricePaid: sub.pricePaid,
+      subscribedAt: sub.createdAt,
+    }));
+
+    res.status(200).json(myCourses);
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to fetch subscribed courses",
+    });
   }
 };
